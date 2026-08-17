@@ -73,4 +73,4 @@ mod verdict;
 
 pub use advice::{RetryAdvice, parse_retry_after};
 pub use status::Status;
-pub use verdict::{Judgment, Verdict, judge};
+pub use verdict::{Judgment, Verdict, judge, judge_signalled};

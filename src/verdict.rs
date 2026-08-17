@@ -146,19 +146,50 @@ impl Judgment {
 /// decorating it.
 #[must_use]
 pub fn judge(status: u16, retry_after: Option<&str>) -> Judgment {
-    let status = Status::new(status);
     let advice = retry_after.and_then(parse_retry_after);
-    let code = status.code();
+    Judgment {
+        status: Status::new(status),
+        verdict: classify(status, advice.is_some()),
+        advice,
+    }
+}
 
-    let verdict = if status.is_success() {
+/// Judge from a status plus an out-of-band signal that the refusal is temporary.
+///
+/// Use this when you have the *signal* but no parseable value: a `Retry-After`
+/// you could not read, a vendor header, or a message recovered from another
+/// tool's output. `fleet` is the motivating caller — it classifies a failed
+/// `nix` invocation from stderr, so it never holds a response header at all,
+/// and nix prints the secondary-rate-limit text from the response *body*.
+///
+/// The distinction matters because the header's only contribution to the
+/// *verdict* is boolean — whether the server volunteered that it would serve
+/// this later. The value contributes to the *delay*, which a caller with no
+/// header simply does not get. Exposing that boolean directly is honest;
+/// fabricating a header value to pass to [`judge`] would put an invented
+/// number in [`Judgment::advice`] where a reader would reasonably trust it.
+#[must_use]
+pub fn judge_signalled(status: u16, temporary_refusal_signalled: bool) -> Judgment {
+    Judgment {
+        status: Status::new(status),
+        verdict: classify(status, temporary_refusal_signalled),
+        advice: None,
+    }
+}
+
+/// The one classification rule, shared by both entry points.
+fn classify(code: u16, temporary_refusal_signalled: bool) -> Verdict {
+    let status = Status::new(code);
+
+    if status.is_success() {
         Verdict::Success
     } else if code == 304 {
         Verdict::Unchanged
     } else if code == 429 {
         Verdict::Throttled
     } else if matches!(code, 401 | 403) {
-        // The header decides — see the note above.
-        if advice.is_some() {
+        // The signal decides — see the note above.
+        if temporary_refusal_signalled {
             Verdict::Throttled
         } else {
             Verdict::Unauthorized
@@ -169,12 +200,6 @@ pub fn judge(status: u16, retry_after: Option<&str>) -> Judgment {
         Verdict::ServerError
     } else {
         Verdict::Other
-    };
-
-    Judgment {
-        status,
-        verdict,
-        advice,
     }
 }
 
@@ -272,6 +297,35 @@ mod tests {
         assert!(!judge(501, None).is_transient(), "501 is permanent");
         assert!(!judge(404, None).is_transient());
         assert!(!judge(200, None).is_transient());
+    }
+
+    /// `judge_signalled` must reach the same verdict as `judge` for every
+    /// status, given the same boolean — they share one rule, and a second
+    /// entry point that drifted from the first would be worse than none.
+    #[test]
+    fn both_entry_points_agree_on_every_status() {
+        for code in 100u16..600 {
+            assert_eq!(
+                super::judge_signalled(code, false).verdict(),
+                judge(code, None).verdict(),
+                "{code} disagreed with no signal"
+            );
+            assert_eq!(
+                super::judge_signalled(code, true).verdict(),
+                judge(code, Some("30")).verdict(),
+                "{code} disagreed with a signal"
+            );
+        }
+    }
+
+    /// The out-of-band form must not invent advice it never received.
+    #[test]
+    fn a_signalled_judgment_carries_no_fabricated_advice() {
+        let j = super::judge_signalled(403, true);
+        assert_eq!(j.verdict(), Verdict::Throttled);
+        assert!(j.is_transient());
+        assert_eq!(j.advice(), None, "no header was read, so no advice may be reported");
+        assert_eq!(j.delay_from(0), None);
     }
 
     #[test]
