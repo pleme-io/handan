@@ -1,0 +1,86 @@
+{
+  "version": 12,
+  "workspace": {
+    "members": [
+      {
+        "name": "handan",
+        "relative_path": "."
+      }
+    ]
+  },
+  "crates": {
+    "handan-0.1.0": {
+      "name": "handan",
+      "version": "0.1.0",
+      "edition": "2024",
+      "source": {
+        "kind": "path",
+        "relative_path": "."
+      },
+      "features": [],
+      "proc_macro": false,
+      "build_script": null,
+      "links": null,
+      "binaries": [],
+      "lib_target": {
+        "name": "handan",
+        "path": "src/lib.rs"
+      },
+      "runtime_dependencies": [],
+      "build_dependencies": [],
+      "crate_renames": {},
+      "build_rust_crate_args": {
+        "crateName": "handan",
+        "version": "0.1.0",
+        "edition": "2024",
+        "release": true,
+        "libName": "handan",
+        "libPath": "src/lib.rs",
+        "preBuild": "export CARGO_CRATE_NAME=handan;"
+      }
+    }
+  },
+  "root_crate": "handan-0.1.0",
+  "workspace_members": [
+    "handan-0.1.0"
+  ],
+  "flake_metadata": {
+    "handan": {
+      "default_bin": null,
+      "repo": "pleme-io/handan"
+    }
+  },
+  "target_resolves": {
+    "base": {
+      "handan-0.1.0": {
+        "runtime_dependencies": [],
+        "build_dependencies": [],
+        "features": []
+      }
+    },
+    "targets": {
+      "aarch64-apple-darwin": {
+        "overrides": {}
+      },
+      "aarch64-unknown-linux-gnu": {
+        "overrides": {}
+      },
+      "aarch64-unknown-linux-musl": {
+        "overrides": {}
+      },
+      "x86_64-apple-darwin": {
+        "overrides": {}
+      },
+      "x86_64-unknown-linux-gnu": {
+        "overrides": {}
+      },
+      "x86_64-unknown-linux-musl": {
+        "overrides": {}
+      }
+    }
+  },
+  "cargo_lock_sha256": "af711b6a1a3cb59b2d1681da13d98ab3e794ec8562f71f1f173e63bb89317c87",
+  "manifest_sha256": {
+    "Cargo.toml": "1a8837d86d3c57a6ce795c79362010f3cc6a8e1b4c8ff9ab80a0a5320eb44f47"
+  }
+}

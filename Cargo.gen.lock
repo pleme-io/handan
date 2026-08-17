@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "cargo_lock_sha256": "af711b6a1a3cb59b2d1681da13d98ab3e794ec8562f71f1f173e63bb89317c87",
+  "manifest_sha256": {
+    "Cargo.toml": "1a8837d86d3c57a6ce795c79362010f3cc6a8e1b4c8ff9ab80a0a5320eb44f47"
+  },
+  "target_resolves": {
+    "base": {
+      "handan-0.1.0": {
+        "runtime_dependencies": [],
+        "build_dependencies": [],
+        "features": []
+      }
+    },
+    "targets": {
+      "aarch64-apple-darwin": {
+        "overrides": {}
+      },
+      "aarch64-unknown-linux-gnu": {
+        "overrides": {}
+      },
+      "aarch64-unknown-linux-musl": {
+        "overrides": {}
+      },
+      "x86_64-apple-darwin": {
+        "overrides": {}
+      },
+      "x86_64-unknown-linux-gnu": {
+        "overrides": {}
+      },
+      "x86_64-unknown-linux-musl": {
+        "overrides": {}
+      }
+    }
+  },
+  "per_crate": {
+    "handan-0.1.0": {
+      "edition": "2024",
+      "lib_target": {
+        "name": "handan",
+        "path": "src/lib.rs"
+      }
+    }
+  },
+  "git_nar_sha256": {},
+  "flake_metadata": {}
+}
