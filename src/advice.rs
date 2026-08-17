@@ -8,7 +8,13 @@ use core::time::Duration;
 /// because normalising requires a clock and a primitive that reads the clock
 /// cannot be tested deterministically. Resolve with [`RetryAdvice::delay_from`],
 /// supplying your own notion of now.
+/// `#[non_exhaustive]` because the documented limit below is an *invitation to
+/// extend*: RFC 9110 says a recipient should also accept the obsolete rfc850 and
+/// asctime date forms, and adding either as a third variant must not be a
+/// breaking change. Callers therefore need a `_` arm — a small cost, paid once,
+/// against a major version bump for every consumer later.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
 pub enum RetryAdvice {
     /// The **delta-seconds** form (RFC 9110 §10.2.3): `Retry-After: 120`.
     After(Duration),
