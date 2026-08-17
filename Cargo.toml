@@ -1,0 +1,22 @@
+[package]
+name = "handan"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.89.0"
+description = "Handan (判断) — zero-dependency judgment of an HTTP response status: which category, and how long to wait"
+homepage = "https://github.com/pleme-io/handan"
+repository = "https://github.com/pleme-io/handan"
+license = "MIT"
+categories = ["web-programming", "network-programming"]
+keywords = ["http", "status", "retry-after", "rate-limit", "classification"]
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = true
