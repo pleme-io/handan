@@ -1,6 +1,6 @@
 [package]
 name = "handan"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 rust-version = "1.89.0"
 description = "Handan (判断) — zero-dependency judgment of an HTTP response status: which category, and how long to wait"

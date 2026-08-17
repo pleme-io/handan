@@ -9,9 +9,9 @@
     ]
   },
   "crates": {
-    "handan-0.1.1": {
+    "handan-0.1.2": {
       "name": "handan",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "edition": "2024",
       "source": {
         "kind": "path",
@@ -31,7 +31,7 @@
       "crate_renames": {},
       "build_rust_crate_args": {
         "crateName": "handan",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "edition": "2024",
         "release": true,
         "libName": "handan",
@@ -40,9 +40,9 @@
       }
     }
   },
-  "root_crate": "handan-0.1.1",
+  "root_crate": "handan-0.1.2",
   "workspace_members": [
-    "handan-0.1.1"
+    "handan-0.1.2"
   ],
   "flake_metadata": {
     "handan": {
@@ -52,7 +52,7 @@
   },
   "target_resolves": {
     "base": {
-      "handan-0.1.1": {
+      "handan-0.1.2": {
         "runtime_dependencies": [],
         "build_dependencies": [],
         "features": []
@@ -79,8 +79,8 @@
       }
     }
   },
-  "cargo_lock_sha256": "4990c8d649258186e85930653ee01364b5e1e86ce657a8b86b8137d391c68853",
+  "cargo_lock_sha256": "c9a47dc5c738d7d397b8237601ab4619355d9464574e7a839e6922a084c1ba30",
   "manifest_sha256": {
-    "Cargo.toml": "7f3e8cd10f7a3828a1c49cc8237ea887cba5caddcef470815a3f6c8d2ad1c569"
+    "Cargo.toml": "c416c45c103dc3fa4114173b2bedcee15fda5582de11b1c7960e02d5de1dd41d"
   }
 }
