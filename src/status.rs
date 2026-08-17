@@ -63,12 +63,29 @@ impl Status {
     /// so retrying is pure waste and, under a retry budget, it consumes
     /// attempts that a genuinely transient failure needed.
     ///
-    /// `408 Request Timeout` is included on top of both originals: it is the
-    /// one `4xx` whose entire meaning is "try again", and neither original
-    /// covered it.
+    /// ── ★ A THIRD DERIVATION SETTLED THE 4xx MEMBERS ──────────────────────
+    ///
+    /// A `forge` constant — `TRANSIENT_HTTP_STATUS_CODES = ["500", "502", "503",
+    /// "504", "408", "421", "429"]` — is the **third** independent derivation of
+    /// this set, and reading it corrected two things I had written here:
+    ///
+    /// - I claimed `408 Request Timeout` was added "on top of both originals,
+    ///   and neither covered it". **False** — forge already had it. Three
+    ///   derivations, two of which reached `408` separately, is much stronger
+    ///   evidence for it than one author's judgement.
+    /// - forge includes **`421 Misdirected Request`** and I had missed it. It
+    ///   belongs: `421` means the request reached a server unable to produce an
+    ///   authoritative response for that target, and RFC 9110 §15.5.20 says a
+    ///   client MAY retry it over a *different connection*. So it is transient
+    ///   in exactly the sense this predicate means.
+    ///
+    /// forge's own comment states the complement the same way, which is the
+    /// agreement that matters: *"The terminal 4xx family (400/401/403/404) is
+    /// absent by construction: retrying cannot help, so failing fast preserves
+    /// the budget."*
     #[must_use]
     pub const fn is_transient(self) -> bool {
-        matches!(self.0, 408 | 429 | 500 | 502 | 503 | 504)
+        matches!(self.0, 408 | 421 | 429 | 500 | 502 | 503 | 504)
     }
 }
 
@@ -116,11 +133,19 @@ mod tests {
         }
     }
 
+    /// The three transient 4xx, and the terminal ones that must never retry.
+    ///
+    /// `421` is here because a THIRD independent derivation (forge) had it and
+    /// this crate did not -- see `is_transient`. `408` is here because two of
+    /// the three derivations reached it separately.
     #[test]
-    fn the_one_transient_4xx_is_covered() {
-        assert!(Status::new(408).is_transient());
-        assert!(Status::new(429).is_transient());
-        assert!(!Status::new(404).is_transient());
-        assert!(!Status::new(403).is_transient());
+    fn the_transient_4xx_are_covered_and_the_terminal_ones_are_not() {
+        for code in [408u16, 421, 429] {
+            assert!(Status::new(code).is_transient(), "{code} must be transient");
+        }
+        // forge states the complement the same way: retrying cannot help here.
+        for code in [400u16, 401, 403, 404] {
+            assert!(!Status::new(code).is_transient(), "{code} must fail fast");
+        }
     }
 }

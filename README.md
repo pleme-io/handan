@@ -51,9 +51,17 @@ preserving both:
   that content-sync crate retried every `5xx`. The explicit set wins —
   `501 Not Implemented`
   and `505` are *permanent* refusals, so retrying them is waste that also
-  consumes a retry budget a transient failure needed. `408 Request Timeout` is
-  added on top of both: it is the one `4xx` whose whole meaning is "try again",
-  and neither original covered it.
+  consumes a retry budget a transient failure needed.
+- **A third derivation settled the `4xx` members.** `forge` holds
+  `TRANSIENT_HTTP_STATUS_CODES = ["500","502","503","504","408","421","429"]` —
+  the same core set again, reached separately a third time. Reading it corrected
+  this crate twice: it already had `408 Request Timeout` (which an earlier draft
+  of this file claimed as an addition "neither original covered"), and it has
+  **`421 Misdirected Request`**, which handan was missing. `421` belongs — RFC
+  9110 §15.5.20 says a client may retry it over a different connection. Its
+  comment states the complement identically: *"the terminal 4xx family
+  (400/401/403/404) is absent by construction: retrying cannot help, so failing
+  fast preserves the budget."*
 - **`Retry-After` has two forms and nobody parsed the second.** A `503` or `429`
   carrying the HTTP-date form read fleet-wide as *no advice at all*, so every
   consumer discarded the one number the server volunteered and guessed instead.
