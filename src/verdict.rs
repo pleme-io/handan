@@ -35,6 +35,22 @@ pub enum Verdict {
     /// `304` — the caller's cached copy is still current.
     Unchanged,
     /// `404` / `410` — the resource is not there.
+    ///
+    /// ── ★ A `404` DOES NOT PROVE ABSENCE ON A PRIVATE RESOURCE ────────────
+    ///
+    /// GitHub — and every host that follows its lead — answers `404` rather than
+    /// `401` for a private resource fetched **without credentials**, on purpose:
+    /// a `401` would disclose that the repository exists. So for a resource the
+    /// caller believes is private, `Absent` and [`Verdict::Unauthorized`] are
+    /// **not distinguishable from the status**, and this arm is the safe generic
+    /// reading, not a proof.
+    ///
+    /// A caller that knows more should override rather than defer. `fleet` is
+    /// the worked example: it classifies private flake inputs, where a `404` on
+    /// the codeload `/archive/` shape reliably means the token never arrived, so
+    /// it maps that case to `Unauthorized` against this verdict — correctly.
+    /// That is a legitimate domain override, and it is the reason this crate
+    /// classifies the *status* and never pretends to classify the *situation*.
     Absent,
     /// `401` / `403` with no retry advice — the caller lacks authority.
     Unauthorized,

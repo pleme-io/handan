@@ -56,6 +56,21 @@
 //!   carrying it was read fleet-wide as *no advice at all*. handan parses both
 //!   forms with no dependency. See [`parse_retry_after`].
 //!
+//! ## It classifies the status, never the situation
+//!
+//! The judgment is a reading of what the *protocol* said. Where a caller knows
+//! more about the *situation*, it should override rather than defer — and one
+//! case matters enough to name here, because it is a trap and it looks like a
+//! bug in this crate:
+//!
+//! **A `404` does not prove absence on a private resource.** GitHub answers
+//! `404` rather than `401` for a private repo fetched without credentials, so
+//! that a `401` does not disclose the repo exists. [`Verdict::Absent`] is
+//! therefore the safe *generic* reading of a `404`, not a proof, and a consumer
+//! that knows the resource is private is right to read the same status as
+//! [`Verdict::Unauthorized`]. `fleet` does exactly that for private flake
+//! inputs and it is not deviating in error.
+//!
 //! ## What it deliberately does not do
 //!
 //! It renders no error type and owns no retry loop. Each consumer's error enum
