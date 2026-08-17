@@ -27,11 +27,14 @@
 //! | site | its derivation |
 //! |---|---|
 //! | `todoku` | `parse_retry_after`; `retry_statuses: {429, 500, 502, 503, 504}` |
-//! | `acervo-net` | `StatusCode` newtype; `RateLimited { retry_after_secs }` |
+//! | a content-sync crate | `StatusCode` newtype; `RateLimited { retry_after_secs }` |
 //! | `sui-spec` | `HttpError::Throttled { retry_after }` + `UnexpectedStatus` |
-//! | `kenshi` | `RateLimited { retry_after_secs }` |
+//! | a GitOps client | `RateLimited { retry_after_secs }` |
 //! | `forge` | `is_transient` |
 //! | `fleet` | string-matched `"HTTP error 429"` out of another tool's English prose |
+//!
+//! Two of the six live in closed repos and are described rather than named; the
+//! derivations are quoted exactly either way.
 //!
 //! Duplication says a shape is *convenient*. Six independent derivations —
 //! two of them landing on the identical *constant* — says the shape is **forced
@@ -48,7 +51,7 @@
 //! Two of the six **disagreed**, and merging them forced a decision rather than
 //! preserving both:
 //!
-//! - `todoku` retried `{429, 500, 502, 503, 504}`; `acervo-net` retried every
+//! - `todoku` retried `{429, 500, 502, 503, 504}`; that content-sync crate retried every
 //!   `5xx`. The explicit set wins — `501 Not Implemented` is a *permanent*
 //!   refusal, so retrying it is waste that also consumes a retry budget.
 //!   See [`Status::is_transient`].
@@ -74,7 +77,7 @@
 //! ## What it deliberately does not do
 //!
 //! It renders no error type and owns no retry loop. Each consumer's error enum
-//! carries domain-specific arms (`acervo` has `Shape`, `sui-spec` has
+//! carries domain-specific arms (one has a `Shape` arm, `sui-spec` has
 //! `BadUrl`/`UnsupportedScheme`) and forcing those into one type would produce
 //! an abstraction that fits none of them. Those stay where they are and *derive*
 //! their classification from here — same shape extracted, different shapes left

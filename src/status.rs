@@ -54,7 +54,7 @@ impl Status {
     /// the divergence that extracting this crate surfaced:
     ///
     /// - `todoku`'s `RetryPolicy` used the explicit set `{429, 500, 502, 503, 504}`
-    /// - `acervo-net`'s `FetchError::is_transient` used `is_server_error()`,
+    /// - a sibling content-sync crate's `is_transient` used `is_server_error()`,
     ///   i.e. every `5xx`
     ///
     /// The explicit set is correct and the all-`5xx` form is a (small) bug:

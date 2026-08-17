@@ -28,11 +28,14 @@ shared dependency.
 | site | its derivation |
 |---|---|
 | `todoku` | `parse_retry_after`; `retry_statuses: {429, 500, 502, 503, 504}` |
-| `acervo-net` | `StatusCode` newtype; `RateLimited { retry_after_secs }` |
+| a content-sync crate | `StatusCode` newtype; `RateLimited { retry_after_secs }` |
 | `sui-spec` | `HttpError::Throttled { retry_after }` + `UnexpectedStatus` |
-| `kenshi` | `RateLimited { retry_after_secs }` |
+| a GitOps client | `RateLimited { retry_after_secs }` |
 | `forge` | `is_transient` |
 | `fleet` | string-matched `"HTTP error 429"` out of another tool's English prose |
+
+Two of the six live in closed repos and are described rather than named; the
+derivations are quoted exactly either way.
 
 Duplication says a shape is *convenient*. Six independent derivations — two of
 them landing on the identical *constant* — says the shape is **forced by the
@@ -45,7 +48,8 @@ Two of the six **disagreed**, and merging them forced a decision instead of
 preserving both:
 
 - **`501` is not retryable.** `todoku` retried `{429, 500, 502, 503, 504}`;
-  `acervo-net` retried every `5xx`. The explicit set wins — `501 Not Implemented`
+  that content-sync crate retried every `5xx`. The explicit set wins —
+  `501 Not Implemented`
   and `505` are *permanent* refusals, so retrying them is waste that also
   consumes a retry budget a transient failure needed. `408 Request Timeout` is
   added on top of both: it is the one `4xx` whose whole meaning is "try again",
