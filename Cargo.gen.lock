@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "cargo_lock_sha256": "af711b6a1a3cb59b2d1681da13d98ab3e794ec8562f71f1f173e63bb89317c87",
+  "cargo_lock_sha256": "4990c8d649258186e85930653ee01364b5e1e86ce657a8b86b8137d391c68853",
   "manifest_sha256": {
-    "Cargo.toml": "1a8837d86d3c57a6ce795c79362010f3cc6a8e1b4c8ff9ab80a0a5320eb44f47"
+    "Cargo.toml": "7f3e8cd10f7a3828a1c49cc8237ea887cba5caddcef470815a3f6c8d2ad1c569"
   },
   "target_resolves": {
     "base": {
-      "handan-0.1.0": {
+      "handan-0.1.1": {
         "runtime_dependencies": [],
         "build_dependencies": [],
         "features": []
@@ -34,7 +34,7 @@
     }
   },
   "per_crate": {
-    "handan-0.1.0": {
+    "handan-0.1.1": {
       "edition": "2024",
       "lib_target": {
         "name": "handan",
